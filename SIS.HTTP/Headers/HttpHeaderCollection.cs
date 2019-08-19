@@ -49,7 +49,7 @@ namespace SIS.HTTP.Headers
          * all of the Headers’ string representations, 
          * separated by new line (“/r/n”). or
          * Environment.NewLine.*/
-        public override string ToString() => string.Join(separator: "\r\n",
+        public override string ToString() => string.Join(separator: GlobalConstants.HttpNewLine,
             this.httpHeaders.Values.Select(header => header.ToString()));
     }
 }

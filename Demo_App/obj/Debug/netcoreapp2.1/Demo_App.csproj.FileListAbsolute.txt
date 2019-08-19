@@ -1,0 +1,17 @@
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\obj\Debug\netcoreapp2.1\Demo_App.csprojAssemblyReference.cache
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\obj\Debug\netcoreapp2.1\Demo_App.csproj.CoreCompileInputs.cache
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\obj\Debug\netcoreapp2.1\Demo_App.AssemblyInfoInputs.cache
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\obj\Debug\netcoreapp2.1\Demo_App.AssemblyInfo.cs
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\bin\Debug\netcoreapp2.1\Demo_App.deps.json
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\bin\Debug\netcoreapp2.1\Demo_App.runtimeconfig.json
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\bin\Debug\netcoreapp2.1\Demo_App.runtimeconfig.dev.json
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\bin\Debug\netcoreapp2.1\Demo_App.dll
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\bin\Debug\netcoreapp2.1\Demo_App.pdb
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\bin\Debug\netcoreapp2.1\SIS.HTTP.dll
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\bin\Debug\netcoreapp2.1\SIS.HTTP.pdb
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\obj\Debug\netcoreapp2.1\Demo_App.csproj.CopyComplete
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\obj\Debug\netcoreapp2.1\Demo_App.dll
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\obj\Debug\netcoreapp2.1\Demo_App.pdb
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\bin\Debug\netcoreapp2.1\SIS.WebServer.dll
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\bin\Debug\netcoreapp2.1\SIS.WebServer.pdb
+\\FS-SF01\RDSusers$\divanova\Desktop\WEB\1.HTTP Protocol\Exercise\SIS\Demo_App\bin\Debug\netcoreapp2.1\Views\Home\Home.html

@@ -1,6 +1,7 @@
 ﻿using SIS.HTTP.Responses.Contracts;
 using SIS.WebServer.Results;
-using System;
+using SIS.HTTP.Enums;
+using SIS.HTTP.Cookies;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -12,13 +13,14 @@ namespace Demo.App.Controllers
         {
             string controllerName = this.GetType().Name.Replace("Controller", string.Empty);
             string viewName = view;
-             /*
-                 Original => throws PATH exception 
-                string viewContent = File.ReadAllText( "Views/"+ controllerName + "/" + viewName + ".html");     
-             */
-            string viewContent = File.ReadAllText( viewName + ".html");
 
-            return new HtmlResult(viewContent, SIS.HTTP.Enums.HttpResponseStatusCode.Ok);
+            string viewContent = File.ReadAllText("Views/" + controllerName + "/" + viewName + ".html");
+
+            HtmlResult htmlResult = new HtmlResult(viewContent, HttpResponseStatusCode.Ok); ;
+            htmlResult.Cookies.AddCookie(new HttpCookie(key:"lang", value: "en"));
+
+            return htmlResult;
+           
         }
     }
 }

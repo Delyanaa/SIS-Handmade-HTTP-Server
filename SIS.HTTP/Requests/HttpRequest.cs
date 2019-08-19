@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using SIS.HTTP.Common;
+using SIS.HTTP.Cookies;
+using SIS.HTTP.Cookies.Contracts;
 using SIS.HTTP.Enums;
 using SIS.HTTP.Exceptions;
 using SIS.HTTP.Headers;
@@ -23,16 +25,25 @@ namespace SIS.HTTP.Requests
             this.FormData = new Dictionary<string, object>();
             this.QueryData = new Dictionary<string, object>();
             this.Headers = new HttpHeaderCollection();
+            this.Cookies = new HttpCookieCollection();
 
             this.ParseRequest(requestString);
         }
 
         public string Path { get; private set; }
+
         public string Url { get; private set; }
+
         public Dictionary<string, object> FormData { get; }
+
         public Dictionary<string, object> QueryData { get; }
+
         public IHttpHeaderCollection Headers { get; }
+
+        public IHttpCookieCollection Cookies { get; }
+
         public HttpRequestMethod RequestMethod { get; private set; }
+        //public IHttpSession Session { get; set; }
 
         /* Checks 
          * if the split requestLine holds exactly 3 elements,
@@ -116,11 +127,30 @@ namespace SIS.HTTP.Requests
          * Throws a BadRequestException if there is no “Host” Header present after the parsing. */
         private void ParseRequestHeaders(string[] plainHeaders)
         {
-            plainHeaders.Select(plainHeader => plainHeader.Split(new[] { ':', ' ' },
+            plainHeaders.Select(plainHeader => plainHeader.Split(new[] { ": " },
                  StringSplitOptions.RemoveEmptyEntries))
                 .ToList()
                 .ForEach(headerKeyValuePair => this.Headers.AddHeader(new HttpHeader
                             (headerKeyValuePair[0], headerKeyValuePair[1])));
+        }
+
+        private void ParseCookies()
+        {
+            if (this.Headers.ContainsHeader(HttpHeader.Cookie))
+            {
+                string value = this.Headers.GetHeader(HttpHeader.Cookie).Value;
+                string[] unparsedCookies = value.Split(new[] { "; " }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach(string unparsedCookie in unparsedCookies)
+                {
+                    string[] cookieKeyValuePair = unparsedCookie.Split(new[] { '=' }, 2);
+
+                    HttpCookie httpCookie = new HttpCookie(cookieKeyValuePair[0],
+                        cookieKeyValuePair[1], false);
+
+                    this.Cookies.AddCookie(httpCookie);
+                }
+            }
         }
 
         //URL: users/profile?name="pesho"&id="asd"#fragment 
@@ -175,26 +205,24 @@ namespace SIS.HTTP.Requests
 
         private void ParseRequest(string requestString)
         {
-            /* StringSplitOptions is 'None',
-               because after the request headers, 
-               there's an empty line that must not be removed*/
             string[] splitRequestString = requestString
                 .Split(new[] { GlobalConstants.HttpNewLine }, StringSplitOptions.None);
 
-            /* Split by " " and we don't want empty items */
             string[] requestLineParams = splitRequestString[0]
                 .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            if (!this.IsValidRequestLine(requestLineParams)) throw new BadRequestException();
-            
-            this.ParseRequestMethod(requestLineParams); //POST
-            this.ParseRequestUrl(requestLineParams);    // home/index
+            if (!this.IsValidRequestLine(requestLineParams))
+            {
+                throw new BadRequestException();
+            }
+
+            this.ParseRequestMethod(requestLineParams);
+            this.ParseRequestUrl(requestLineParams);
             this.ParseRequestPath();
 
             this.ParseRequestHeaders(this.ParsePlainRequestHeaders(splitRequestString).ToArray());
-            //this.ParseCookies();
+            this.ParseCookies();
 
-            /* Parses the body and the query params */
             this.ParseRequestParameters(splitRequestString[splitRequestString.Length - 1]);
         }
     }

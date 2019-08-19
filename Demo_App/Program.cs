@@ -10,14 +10,13 @@ namespace Demo_App
     {
         static void Main(string[] args)
         {
-            
 
             IServerRoutingTable serverRoutingTable = new ServerRoutingTable();
             
             serverRoutingTable.Add(HttpRequestMethod.Get, "/", httpRequest
                 => new HomeController().Home(httpRequest));
 
-            Server server = new Server(12345, serverRoutingTable);
+            Server server = new Server(8000, serverRoutingTable);
             server.Run();
         }
     }

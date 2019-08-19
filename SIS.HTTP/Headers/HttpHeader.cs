@@ -5,7 +5,7 @@ namespace SIS.HTTP.Headers
     /*Store data about a HTTP Request / Response Header.*/
     public class HttpHeader
     {
-        internal string key;
+        public const string Cookie = "Cookie";
 
         public HttpHeader(string key, string value)
         {
