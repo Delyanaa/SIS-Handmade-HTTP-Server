@@ -19,6 +19,8 @@ namespace SIS.HTTP.Cookies
         {
             CoreValidator.ThrowIfNull(httpCookie, nameof(httpCookie));
 
+            //TODO: Validation for existing parameter (throw exception?)
+
             this.httpCookies.Add(httpCookie.Key, httpCookie);
         }
 

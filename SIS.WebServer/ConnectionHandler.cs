@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 using SIS.HTTP.Common;
 using SIS.HTTP.Enums;
 using SIS.HTTP.Exceptions;
 using SIS.HTTP.Requests;
 using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses.Contracts;
+using SIS.HTTP.Sessions;
 using SIS.WebServer.Results;
 using SIS.WebServer.Routing.Contracts;
+using SIS.HTTP.Cookies;
 
 namespace SIS.WebServer
 {
@@ -35,31 +38,35 @@ namespace SIS.WebServer
             this.serverRoutingTable = serverRoutingTable;
         }
 
-        /* Contains 
-         * the main functionality of the class. It uses the other 
-         * methods to read the request, handle it, generate 
-         * a response, send it to the client, and finally, 
+        /* asynchronous 
+         * method which contains the main functionality of the class. 
+         * It uses the other methods to read the request, handle it, 
+         * generate a response, send it to the client, and finally, 
          * close the connection.*/
-        public void ProcessRequest()
+        public async Task ProcessRequestAsync()
         {
+            //IHttpResponse httpResponse = null;
             try
             {
-                var httpRequest = this.ReadRequest();
+                IHttpRequest httpRequest = await this.ReadRequestAsync();
+
                 if (httpRequest != null)
                 {
                     Console.WriteLine($"Processing {httpRequest.RequestMethod}{httpRequest.Path}...");
+                    var sessionId = this.SetRequestSession(httpRequest);
 
                     var httpResponse = this.HandleRequest(httpRequest);
-                    this.PrepareResponse(httpResponse);
+                    this.SetResponseSession(httpResponse, sessionId);
+                    await this.PrepareResponse(httpResponse);
                 }
             }
             catch (BadRequestException badRequestException)
             {
-                this.PrepareResponse(new TextResult(badRequestException.ToString(), HttpResponseStatusCode.BadRequest));
+                await this.PrepareResponse(new TextResult(badRequestException.ToString(), HttpResponseStatusCode.BadRequest));
             }
             catch (Exception exception)
             {
-                this.PrepareResponse(new TextResult(exception.ToString(), HttpResponseStatusCode.InternalServerError));
+                await this.PrepareResponse(new TextResult(exception.ToString(), HttpResponseStatusCode.InternalServerError));
             }
             /*Disables both receiving and sending on socket*/
             this.client.Shutdown(how: SocketShutdown.Both);
@@ -69,14 +76,14 @@ namespace SIS.WebServer
          * the byte data from the client connection, extracts
          * the request string data from it, and then maps it
          * to a HttpRequest object.*/
-        public IHttpRequest ReadRequest()
+        public async Task<IHttpRequest> ReadRequestAsync()
         {
             StringBuilder result = new StringBuilder();
             var data = new ArraySegment<byte>(new byte[1024]);
 
             while (true)
             {
-                int numberOfBytesRead = this.client.Receive(data.Array, SocketFlags.None);
+                int numberOfBytesRead = await this.client.ReceiveAsync(data, SocketFlags.None);
                 if (numberOfBytesRead == 0)  break;
 
                 string bytesAsString = Encoding.UTF8.GetString(data.Array, index: 0, count: numberOfBytesRead);
@@ -108,10 +115,37 @@ namespace SIS.WebServer
         /*Extracts
          * the byte data from the Response, 
          * and sends it to the client*/
-        private void PrepareResponse(IHttpResponse httpResponse)
+        private async Task PrepareResponse(IHttpResponse httpResponse)
         {
             byte[] byteSegments = httpResponse.GetBytes();
             this.client.Send(byteSegments, SocketFlags.None);
+        }
+
+        private string SetRequestSession(IHttpRequest httpRequest)
+        {
+            string sessionId = null;
+            //user already has session 
+            if (httpRequest.Cookies.ContainsCookie(HttpSessionStorage.SessionCookieKey))
+            {
+                var cookie = httpRequest.Cookies.GetCookie(HttpSessionStorage.SessionCookieKey);
+                sessionId = cookie.Value;
+            }
+            else // no generated session 
+            {
+                sessionId = Guid.NewGuid().ToString();
+            }
+            httpRequest.Session = HttpSessionStorage.GetSessions(sessionId);
+
+            return httpRequest.Session.Id;
+        }
+
+        private void SetResponseSession(IHttpResponse httpResponse, string sessionId)
+        {
+            //if we have a session
+            if (sessionId != null)
+            {
+                httpResponse.AddCookie(new HttpCookie(HttpSessionStorage.SessionCookieKey, sessionId));
+            }
         }
     }
 }

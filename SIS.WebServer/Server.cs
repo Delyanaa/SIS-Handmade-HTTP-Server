@@ -38,7 +38,7 @@ namespace SIS.WebServer
         private async Task Listen(Socket client)
         {
             var connectionHandler = new ConnectionHandler(client, this.serverRoutingTable);
-            connectionHandler.ProcessRequest();
+            await connectionHandler.ProcessRequestAsync(); 
         }
 
         /*Start 
@@ -56,8 +56,8 @@ namespace SIS.WebServer
                 Console.WriteLine("Waiting for client...");
 
                 /*Accepts the pending connection request*/
-                var client = this.listener.AcceptSocket();
-                this.Listen(client);
+                var client = this.listener.AcceptSocketAsync().GetAwaiter().GetResult();
+                Task.Run(()=> this.Listen(client));
             }
         }
     }

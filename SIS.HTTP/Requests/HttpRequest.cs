@@ -9,6 +9,8 @@ using SIS.HTTP.Exceptions;
 using SIS.HTTP.Headers;
 using SIS.HTTP.Headers.Contracts;
 using SIS.HTTP.Requests.Contracts;
+using SIS.HTTP.Sessions;
+using SIS.HTTP.Sessions.Contracts;
 
 namespace SIS.HTTP.Requests
 {
@@ -43,7 +45,8 @@ namespace SIS.HTTP.Requests
         public IHttpCookieCollection Cookies { get; }
 
         public HttpRequestMethod RequestMethod { get; private set; }
-        //public IHttpSession Session { get; set; }
+
+        public IHttpSession Session { get; set; }
 
         /* Checks 
          * if the split requestLine holds exactly 3 elements,
@@ -80,8 +83,12 @@ namespace SIS.HTTP.Requests
         private IEnumerable<string> ParsePlainRequestHeaders(string[] requestLines)
         {
             for (int i = 1; i < requestLines.Length - 1; i++)
+            {
                 if (!string.IsNullOrEmpty(requestLines[i]))
+                {
                     yield return requestLines[i];
+                }
+            }
         }
 
         /* Sets 
